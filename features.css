@@ -1,0 +1,654 @@
+.subtasks {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 13px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: var(--card);
+  transition:
+    border-color 0.25s,
+    background 0.25s;
+}
+
+.subtasks-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 11px 12px;
+}
+
+.subtasks-toggle {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 3px 10px;
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.subtasks-heading {
+  font:
+    700 12px Manrope,
+    sans-serif;
+  letter-spacing: 0.1px;
+}
+
+.subtasks-info {
+  grid-column: 1;
+  color: var(--mute);
+  font:
+    500 10px Manrope,
+    sans-serif;
+}
+
+.subtasks-arrow {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  position: relative;
+  width: 25px;
+  height: 25px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--row);
+  transition:
+    transform 0.25s,
+    background 0.2s;
+}
+
+.subtasks-arrow::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 7px;
+  width: 6px;
+  height: 6px;
+  border-right: 1.8px solid var(--mute);
+  border-bottom: 1.8px solid var(--mute);
+  transform: rotate(45deg);
+  transition:
+    transform 0.25s,
+    top 0.25s;
+}
+
+.subtasks-toggle:hover .subtasks-arrow {
+  background: var(--card);
+}
+
+.subtasks-toggle[aria-expanded="true"] .subtasks-arrow {
+  transform: rotate(180deg);
+}
+
+.subtasks-progress {
+  width: 65px;
+  height: 6px;
+  flex: none;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--line);
+}
+
+.subtasks-progress span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--acc), var(--acc2));
+  transition: width 0.4s cubic-bezier(0.3, 0.8, 0.3, 1);
+}
+
+.subtasks-panel {
+  display: grid;
+  gap: 8px;
+  padding: 0 10px 10px;
+  animation: rise 0.25s ease both;
+}
+
+.subtasks-panel[hidden] {
+  display: none;
+}
+
+.subtasks-list {
+  display: grid;
+  gap: 6px;
+}
+
+.subtask-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 9px 7px 9px 9px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--row);
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    transform 0.2s;
+}
+
+.subtask-row:hover {
+  background: var(--card);
+}
+
+.subtask-row .chk {
+  position: relative;
+  width: 25px;
+  height: 25px;
+  flex: none;
+  cursor: pointer;
+}
+
+.subtask-row .chk input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.subtask-row .chk::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9px;
+  border: 2px solid var(--p0);
+  transition: 0.3s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.subtask-row .chk svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset 0.4s 0.12s;
+  pointer-events: none;
+}
+
+.subtask-row.is-done .chk::before {
+  background: linear-gradient(135deg, var(--acc), var(--acc2));
+  border-color: transparent;
+  transform: scale(1.1) rotate(8deg);
+  animation: subtaskCheck 0.3s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.subtask-row.is-done .chk svg {
+  stroke-dashoffset: 0;
+}
+
+.subtask-row .chk:focus-within::before {
+  outline: 2px solid var(--acc);
+  outline-offset: 3px;
+}
+
+@keyframes subtaskCheck {
+  from {
+    transform: scale(0.65) rotate(-8deg);
+  }
+  to {
+    transform: scale(1.1) rotate(8deg);
+  }
+}
+
+.subtask-text {
+  flex: 1;
+  min-width: 0;
+  color: var(--ink);
+  font:
+    500 13px/1.45 Manrope,
+    sans-serif;
+  overflow-wrap: anywhere;
+  background: linear-gradient(var(--acc2), var(--acc2)) 0 58% / 0 2px no-repeat;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  transition:
+    background-size 0.45s ease,
+    color 0.3s,
+    opacity 0.3s;
+}
+
+.subtask-row.is-done .subtask-text {
+  background-size: 100% 2px;
+  color: var(--mute);
+}
+
+.subtask-remove {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--mute);
+  font:
+    22px/1 Manrope,
+    sans-serif;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    background 0.2s,
+    transform 0.2s;
+}
+
+.subtask-remove:hover {
+  color: var(--p2);
+  background: rgba(255, 77, 109, 0.12);
+  transform: rotate(90deg);
+}
+
+.subtask-form {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--row);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.subtask-form:focus-within {
+  border-color: var(--acc);
+  box-shadow: 0 0 0 3px rgba(22, 199, 169, 0.13);
+}
+
+.subtask-form input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  padding: 8px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font:
+    12px Manrope,
+    sans-serif;
+}
+
+.subtask-form input::placeholder {
+  color: var(--mute);
+}
+
+.subtask-form button {
+  display: grid;
+  place-items: center;
+  width: 33px;
+  height: 33px;
+  flex: none;
+  border: 0;
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--acc), var(--acc2));
+  font:
+    22px/1 Manrope,
+    sans-serif;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    filter 0.2s;
+}
+
+.subtask-form button:hover {
+  transform: scale(1.05);
+  filter: brightness(1.05);
+}
+
+@media (max-width: 380px) {
+  .subtasks-header {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .subtasks-progress {
+    width: 45px;
+  }
+
+  .subtasks-panel {
+    padding-inline: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .subtask-row .chk::before,
+  .subtask-row .chk svg,
+  .subtasks-progress span {
+    transition: none;
+    animation: none;
+  }
+}
+
+body.palette-open {
+  overflow: hidden;
+}
+
+.command-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: min(18vh, 150px) 16px 20px;
+}
+
+.command-overlay[hidden] {
+  display: none;
+}
+
+.command-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 14, 20, 0.58);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: commandFade 0.18s ease both;
+}
+
+.command-dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 570px);
+  max-height: min(590px, 72vh);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow: 0 35px 100px rgba(0, 0, 0, 0.35);
+  animation: commandEnter 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.command-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 17px 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.command-search-icon {
+  color: var(--acc);
+  font-size: 27px;
+  line-height: 1;
+}
+
+.command-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font:
+    15px Manrope,
+    sans-serif;
+}
+
+.command-input::placeholder {
+  color: var(--mute);
+}
+
+.command-search kbd,
+.command-footer kbd {
+  padding: 3px 7px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--row);
+  color: var(--mute);
+  font:
+    11px Manrope,
+    sans-serif;
+}
+
+.command-results {
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.command-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.command-item[aria-selected="true"],
+.command-item:hover {
+  background: var(--row);
+}
+
+.command-item[aria-selected="true"] {
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.command-item-icon {
+  display: grid;
+  width: 35px;
+  height: 35px;
+  flex: none;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--card);
+  color: var(--acc);
+  font-size: 18px;
+}
+
+.command-item-content {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 2px;
+}
+
+.command-item-content strong {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.command-item-content small {
+  color: var(--mute);
+  font-size: 11px;
+}
+
+.command-item-hint {
+  color: var(--mute);
+  font-size: 10px;
+}
+
+.command-empty {
+  padding: 30px 12px;
+  color: var(--mute);
+  font-size: 13px;
+  text-align: center;
+}
+
+.command-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  padding: 11px;
+  border-top: 1px solid var(--line);
+  color: var(--mute);
+  font-size: 10px;
+}
+
+.command-highlight {
+  animation: taskHighlight 1.5s ease;
+}
+
+@keyframes commandFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes commandEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes taskHighlight {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+  35% {
+    box-shadow: 0 0 0 3px var(--acc);
+  }
+}
+
+.install-app {
+  position: fixed;
+  right: max(20px, env(safe-area-inset-right));
+  left: auto;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: max-content;
+  max-width: calc(100vw - 40px);
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--acc), var(--acc2));
+  color: #fff;
+  font:
+    700 13px Manrope,
+    sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  animation: installAppear 0.3s ease both;
+  transition:
+    box-shadow 0.2s,
+    filter 0.2s;
+}
+
+.install-app > span:first-child {
+  font-size: 19px;
+  line-height: 1;
+}
+
+.install-app:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.27);
+}
+
+.install-app:active {
+  filter: brightness(0.95);
+}
+
+.install-app:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.install-app[hidden] {
+  display: none;
+}
+
+@keyframes installAppear {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .install-app {
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-radius: 14px;
+  }
+
+  .install-app > span:last-child {
+    display: none;
+  }
+
+  .install-app > span:first-child {
+    display: block;
+    width: 24px;
+    height: 24px;
+    font-size: 0;
+    background: url("/icons/install.svg") center / contain no-repeat;
+  }
+}
+
+@media (max-width: 380px) {
+  .install-app {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: max(14px, env(safe-area-inset-bottom));
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+    border-radius: 12px;
+  }
+
+  .install-app > span:first-child {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .install-app {
+    animation: none;
+    transition: none;
+  }
+}

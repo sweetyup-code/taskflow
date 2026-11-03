@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <title>Taskflow — список задач</title>
+    <meta
+      name="description"
+      content="Список задач на чистом JavaScript: приоритеты, умный ввод, drag & drop, отмена удаления, темы с анимацией."
+    />
+    <meta name="theme-color" content="#071a22" />
+    <meta property="og:title" content="Taskflow — список задач" />
+    <meta property="og:image" content="og-image.png" />
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Unbounded:wght@500;700&display=swap"
+    />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Taskflow" />
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="features.css" />
+    <link rel="stylesheet" href="welcome.css" />
+    <script>
+      try {
+        document.documentElement.dataset.theme =
+          localStorage.getItem("taskflow:theme") ||
+          (matchMedia("(prefers-color-scheme:dark)").matches
+            ? "dark"
+            : "light");
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div class="tide" aria-hidden="true"><i></i><i></i><i></i></div>
+
+    <main class="app">
+      <header class="top">
+        <div>
+          <p class="date" id="date"></p>
+          <h1 id="greeting">Привет</h1>
+          <p class="subtitle">Какие планы на сегодня?</p>
+        </div>
+        <button
+          class="icon-btn"
+          id="theme"
+          type="button"
+          aria-label="Сменить тему"
+        >
+          <svg class="sun" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="4" />
+            <path
+              d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+            />
+          </svg>
+          <svg class="moon" viewBox="0 0 24 24">
+            <path d="M21 13A9 9 0 1111 3a7 7 0 0010 10z" />
+          </svg>
+        </button>
+      </header>
+
+      <section class="card">
+        <div class="progress">
+          <svg class="ring" viewBox="0 0 44 44" aria-hidden="true">
+            <defs>
+              <linearGradient id="g">
+                <stop offset="0" stop-color="#16c7a9" />
+                <stop offset="1" stop-color="#ff7a59" />
+              </linearGradient>
+            </defs>
+            <circle class="bg" cx="22" cy="22" r="18" />
+            <circle class="fg" id="ring" cx="22" cy="22" r="18" />
+          </svg>
+          <div>
+            <b id="stat">0 из 0</b><span id="hint">Добавьте первую задачу</span>
+          </div>
+        </div>
+
+        <form class="add" id="form" autocomplete="off">
+          <button
+            type="button"
+            class="prio"
+            id="prio"
+            data-p="0"
+            aria-label="Приоритет: обычный"
+            title="Обычный"
+          ></button>
+          <input
+            id="input"
+            maxlength="140"
+            placeholder="Что нужно сделать?"
+            aria-label="Новая задача"
+            enterkeyhint="done"
+          />
+          <button
+            type="button"
+            class="mic"
+            id="mic"
+            hidden
+            aria-pressed="false"
+            aria-label="Голосовой ввод"
+            title="Голосовой ввод (M)"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3z" />
+              <path d="M5 11a7 7 0 0014 0M12 18v3" />
+            </svg>
+          </button>
+          <button class="go" aria-label="Добавить задачу">+</button>
+        </form>
+        <p class="tip">
+          Умный ввод: <code>!срочно</code> <code>!важно</code>
+          <code>@завтра</code> <code>@25.12</code>. <kbd>/</kbd> — новая задача
+          · <kbd>Ctrl K</kbd> — команды
+        </p>
+
+        <nav class="filters" id="filters" role="tablist" style="--i: 0">
+          <i class="pill"></i>
+          <button role="tab" aria-selected="true" data-f="all">
+            Все <span class="n">0</span>
+          </button>
+          <button role="tab" aria-selected="false" data-f="active">
+            Активные <span class="n">0</span>
+          </button>
+          <button role="tab" aria-selected="false" data-f="done">
+            Готово <span class="n">0</span>
+          </button>
+        </nav>
+
+        <ul class="list" id="list"></ul>
+        <p class="empty" id="empty" hidden></p>
+        <div class="foot">
+          <button type="button" id="clear" hidden>Очистить выполненные</button>
+        </div>
+      </section>
+    </main>
+
+    <template id="tpl">
+      <li class="task">
+        <span class="grip" aria-hidden="true">⠿</span>
+        <label class="chk">
+          <input type="checkbox" aria-label="Выполнено" />
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12.5l4.5 4.5L19 7.5" />
+          </svg>
+        </label>
+        <div class="body">
+          <span class="txt" title="Двойной клик — редактировать"></span>
+          <small class="meta"></small>
+        </div>
+        <button class="del" type="button" aria-label="Удалить задачу">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        </button>
+      </li>
+    </template>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <span id="toastMsg"></span>
+      <button type="button" id="undo">Отменить</button>
+    </div>
+    <canvas id="fx" aria-hidden="true"></canvas>
+    <script src="/script.js"></script>
+    <script src="/voice-smart.js"></script>
+    <script src="/features.js"></script>
+    <script src="/welcome.js"></script>
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
